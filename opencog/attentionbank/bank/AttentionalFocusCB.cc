@@ -48,9 +48,9 @@ bool AttentionalFocusCB::link_match(const PatternTermPtr& ptm, const Handle& lso
 		attentionbank(_as).atom_is_in_AF(lsoln);
 }
 
-IncomingSet AttentionalFocusCB::get_incoming_set(const Handle& h)
+IncomingSet AttentionalFocusCB::get_incoming_set(const Handle& h, Type t)
 {
-	IncomingSet incoming_set = h->getIncomingSet();
+	IncomingSet incoming_set = h->getIncomingSetByType(t, _as);
 
 	// Discard the part of the incoming set that is below the
 	// AF boundary.  The PM will look only at those links that
@@ -71,9 +71,9 @@ IncomingSet AttentionalFocusCB::get_incoming_set(const Handle& h)
 		return filtered_set;
 	}
 
-	auto compare_sti = [&](const LinkPtr& lptr1, const LinkPtr& lptr2)->bool
+	auto compare_sti = [&](const Handle& lptr1, const Handle& lptr2)->bool
 	{
-		return get_sti(Handle(lptr1)) > get_sti(Handle(lptr2));
+		return get_sti(lptr1) > get_sti(lptr2);
 	};
 
 	// The exploration of the set of patterns proceeds by going through
