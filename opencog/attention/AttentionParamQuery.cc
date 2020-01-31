@@ -1,11 +1,9 @@
 
-#include <opencog/atoms/atom_types/NameServer.h>
 #include <opencog/atoms/base/Link.h>
+#include <opencog/atoms/core/StateLink.h>
 #include <opencog/guile/SchemeEval.h>
-#include <opencog/util/Config.h>
 
 #include "AttentionParamQuery.h"
-#include "Neighbors.h"
 
 using namespace opencog;
 
@@ -70,47 +68,37 @@ AttentionParamQuery::AttentionParamQuery(AtomSpace* as): _as(as)
 
 std::string AttentionParamQuery::get_param_value(const std::string& param)
 {
-    Handle hparam = _as->add_node(CONCEPT_NODE, param);
-    // This should always return one atom.
-    HandleSeq hsvalue = get_target_neighbors(hparam, STATE_LINK);
-    if(hsvalue.empty()){
-        throw RuntimeException(TRACE_INFO, "Parameter %s has no associated value.",
-                param.c_str());
-    }
+    Handle hparam = _as->get_node(CONCEPT_NODE, param);
+    if (nullptr == hparam)
+        throw RuntimeException(TRACE_INFO,
+             "There is no parameter %s", param.c_str());
 
-    Handle  hvalue = hsvalue[0];
-    if (not nameserver().isA(hvalue->get_type(), NODE)){
-        throw RuntimeException(TRACE_INFO, "Parameter's value is a link. Can't"
-                "convert to string.",
-                param.c_str());
-    }
+    Handle hvalue = StateLink::get_state(hparam);
+    if (nullptr == hvalue)
+        throw RuntimeException(TRACE_INFO,
+             "Parameter %s has no value.", param.c_str());
 
-    std::string str = hvalue->get_name();
-    str.erase (str.find_last_not_of('0') + 1, std::string::npos);
+    if (not hvalue->is_node())
+        throw RuntimeException(TRACE_INFO,
+            "Parameter %s must be a Node.", param.c_str());
 
-    if(str.back() == '.')
-        str.pop_back();
-
-    return str;
+    return hvalue->get_name();
 }
 
 Handle AttentionParamQuery::get_param_hvalue(const std::string& param)
 {
-    Handle hparam = _as->add_node(CONCEPT_NODE, param);
-    // This should always return one atom.
-    HandleSeq hsvalue = get_target_neighbors(hparam, STATE_LINK);
-    if(hsvalue.empty()){
-        throw RuntimeException(TRACE_INFO, "Parameter %s has no associated value.",
-                param.c_str());
-    }
+    Handle hparam = _as->get_node(CONCEPT_NODE, param);
+    if (nullptr == hparam)
+        throw RuntimeException(TRACE_INFO,
+             "There is no parameter %s", param.c_str());
 
-    return  hsvalue[0];
+    return StateLink::get_state(hparam);
 }
 
 HandleSeq AttentionParamQuery::get_params(void)
 {
     Handle rh = HandleCast(hget_params->execute(_as));
-    if (NULL != rh) rh = _as->add_atom(rh);
+    if (rh) rh = _as->add_atom(rh);
 
     return rh->getOutgoingSet();
 }

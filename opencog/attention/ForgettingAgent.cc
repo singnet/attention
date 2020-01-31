@@ -26,7 +26,7 @@
 
 #include <opencog/atomspace/AtomSpace.h>
 #include <opencog/atoms/base/Link.h>
-#include <opencog/cogserver/server/Agent.h>
+#include <opencog/cogserver/modules/agents/Agent.h>
 #include <opencog/cogserver/server/CogServer.h>
 #include <opencog/cogserver/server/Factory.h>
 #include <opencog/attentionbank/types/atom_types.h>
@@ -100,7 +100,7 @@ void ForgettingAgent::forget()
                 // TODO: do recursive remove if neighbours are not very important
                 IncomingSet iset = atomsVector[i]->getIncomingSet(_as);
                 recursive = true;
-                for (const LinkPtr& h : iset)
+                for (const Handle& h : iset)
                 {
                     if (h->get_type() != ASYMMETRIC_HEBBIAN_LINK) {
                         recursive = false;

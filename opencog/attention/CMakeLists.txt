@@ -6,12 +6,15 @@ ADD_DEFINITIONS(-DNDEBUG)
 
 # AttentionModule
 ADD_LIBRARY(attention SHARED
+	AttentionModule
 	AttentionParamQuery
  	AttentionUtils
-	AttentionModule
+	Neighbors
+
 	ImportanceDiffusionBase
 	AFImportanceDiffusionAgent
 	WAImportanceDiffusionAgent
+
 	RentCollectionBaseAgent
 	AFRentCollectionAgent
 	WARentCollectionAgent
@@ -20,13 +23,16 @@ ADD_LIBRARY(attention SHARED
 	HebbianCreationAgent
 	HebbianUpdatingAgent
 
-	Neighbors
 	#scm/StimulationAgent
 )
 
+# TARGET_LINK_DIRECTORIES(attention
+#	PUBLIC ${CMAKE_INSTALL_PREFIX}/lib${LIB_DIR_SUFFIX}/opencog/modules
+#)
+
 TARGET_LINK_LIBRARIES(attention
 	attention-types
-	attentionbonk
+	attentionbank
 	${COGSERVER_LIBRARIES}
 	${ATOMSPACE_LIBRARIES})
 
