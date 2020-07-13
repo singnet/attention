@@ -1,4 +1,4 @@
-Attention Allocation
+test circle-ci Attention Allocation
 =====================
 
 [![CircleCI](https://circleci.com/gh/opencog/opencog.svg?style=svg)](https://circleci.com/gh/opencog/attention)
