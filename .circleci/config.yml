@@ -7,7 +7,7 @@ jobs:
         user: root
         environment:
           CCACHE_DIR: /ws/ccache
-    working_directory: /ws/opencog
+    working_directory: /ws/attention
     steps:
       - attach_workspace:
           at: /ws
